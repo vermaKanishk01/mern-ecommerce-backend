@@ -9,6 +9,7 @@ const categoryRouter = require("./routes/categoryRoutes");
 const subCategoryRouter = require("./routes/subCategoryRoutes");
 const productRouter = require("./routes/productRoutes");
 const cartRouter = require("./routes/cartRoutes");
+const wishlistRouter = require("./routes/wishlistRoutes");
 
 
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/sub-category", subCategoryRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/wishlist", wishlistRouter);
 
 
 const PORT = process.env.PORT || 5000;
