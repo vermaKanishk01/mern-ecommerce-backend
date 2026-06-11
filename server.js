@@ -11,7 +11,7 @@ const productRouter = require("./routes/productRoutes");
 const cartRouter = require("./routes/cartRoutes");
 const wishlistRouter = require("./routes/wishlistRoutes");
 const orderRouter = require("./routes/orderRoutes");
-
+const reviewRouter = require("./routes/reviewRoutes");
 
 const app = express();
 connectDb();
@@ -31,6 +31,7 @@ app.use("/api/sub-category", subCategoryRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/wishlist", wishlistRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/reviews", reviewRouter);
 
 
 const PORT = process.env.PORT || 5000;
