@@ -13,6 +13,7 @@ const wishlistRouter = require("./routes/wishlistRoutes");
 const orderRouter = require("./routes/orderRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const addressRouter = require("./routes/addressRoutes");
+const paymentRouter = require("./routes/paymentRoutes");
 
 const app = express();
 connectDb();
@@ -34,6 +35,7 @@ app.use("/api/wishlist", wishlistRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/address", addressRouter);
+app.use("/api/payment", paymentRouter);
 
 
 const PORT = process.env.PORT || 5000;
