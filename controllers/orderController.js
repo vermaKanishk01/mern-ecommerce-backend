@@ -7,7 +7,7 @@ const Product = require("../models/productModel");
 const createOrder = async (req, res) => {
   try {
     const userId = req.user._id;
-    const { shippingAddress, paymentMethod } = req.body;
+    const { shippingAddress } = req.body;
 
     // Get user cart
     const cart = await Cart.findOne({ user: userId });
@@ -52,7 +52,6 @@ const createOrder = async (req, res) => {
       user: userId,
       orderItems,
       shippingAddress,
-      paymentMethod,
     });
 
     // Clear cart
@@ -88,7 +87,7 @@ const buyNow = async (req, res) => {
         {
           product: product._id,
           name: product.name,
-          image: product.images[0],
+          image: product?.images?.[0] || "",
           price: product.price,
           quantity,
           size,

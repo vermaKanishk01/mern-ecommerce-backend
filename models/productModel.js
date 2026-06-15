@@ -73,8 +73,22 @@ const productSchema = new mongoose.Schema({
   },
 
   images: {
-    type: [String],
+    type: [
+      {
+        url: {
+          type: String,
+          required: true,
+        },
+
+        public_id: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+
     default: [],
+
     validate: {
       validator: (arr) => arr.length > 0,
       message: "At least one product image is required",
