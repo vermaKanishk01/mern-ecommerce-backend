@@ -1,6 +1,8 @@
 const Category = require("../models/categoryModel");
 const Product = require("../models/productModel");
 const SubCategory = require("../models/subCategoryModel");
+const cloudinary = require("../config/cloudinary");
+const fs = require("fs");
 
 // CREATE PRODUCT
 const createProduct = async (req, res) => {
@@ -64,6 +66,46 @@ const createProduct = async (req, res) => {
       }
     }
 
+    let uploadedImages = [];
+
+    if (req.files && req.files.length > 0) {
+
+      try {
+        for (const file of req.files) {
+          const uploadedImage =
+            await cloudinary.uploader.upload(file.path, {
+              folder: "myapp/products",
+            });
+
+          uploadedImages.push({
+            public_id: uploadedImage.public_id,
+            url: uploadedImage.secure_url,
+          });
+        }
+
+      } catch (uploadError) {
+        console.error("Cloudinary Upload Error:", uploadError);
+        return res.status(500).json({ success: false, message: "Failed to upload product images", error: uploadError.message, });
+      } finally {
+        for (const file of req.files) {
+          if (fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+          }
+        }
+      }
+    }
+
+    let parsedSizes = [];
+    let parsedColors = [];
+
+    if (sizes) {
+      parsedSizes = typeof sizes === "string" ? JSON.parse(sizes) : sizes;
+    }
+
+    if (colors) {
+      parsedColors = typeof colors === "string" ? JSON.parse(colors) : colors;
+    }
+
     const product = await Product.create({
       name,
       description: description.trim(),
@@ -73,9 +115,9 @@ const createProduct = async (req, res) => {
       price,
       discountPrice,
       stock,
-      images: images || [],
-      sizes: sizes || [],
-      colors: colors || [],
+      images: uploadedImages,
+      sizes: parsedSizes,
+      colors: parsedColors,
       material,
       gender,
     });
