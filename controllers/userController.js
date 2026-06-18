@@ -4,7 +4,8 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const validator = require("validator");
-const cloudinary = require("../config/cloudinary")
+const cloudinary = require("../config/cloudinary");
+const sendEmail = require("../utils/sendEmail");
 
 const generateToken = (id) => {
   return jwt.sign(
@@ -177,41 +178,51 @@ const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "No user found with this email" });
+      return res.json({ success: true, message: "If this email exists, a reset link has been sent" });
     }
 
-    // Generate token
     const resetToken = crypto.randomBytes(32).toString("hex");
 
-    // Hash token before saving (security)
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
 
+    // store hashed token in the database
     user.passwordResetToken = hashedToken;
-    user.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    user.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
     await user.save({ validateBeforeSave: false });
 
-    // Send token (replace with email service)
-    const resetURL = `http://localhost:3000/reset-password/${resetToken}`;
+    // Frontend URL (NOT backend API)
+    const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    res.json({
-      success: true,
-      message: "Reset token generated",
-      resetURL, // ⚠️ In production, send via email instead
+    const html = `
+      <h3>Password Reset Request</h3>
+      <p>You requested a password reset.</p>
+      <p>Click below to reset your password:</p>
+      <a href="${resetURL}" target="_blank">${resetURL}</a>
+      <p>This link expires in 10 minutes.</p>
+    `;
+
+    await sendEmail({
+      email: user.email,
+      subject: "Password Reset",
+      html,
     });
 
+    res.json({ success: true, message: "Password reset email sent" });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error(error);
+    res.status(500).json({ success: false, message: "Email could not be sent" });
   }
 };
 
 
 const resetPassword = async (req, res) => {
   try {
-    const token = req.params.token;
+    const { token } = req.params;
     const { password } = req.body;
 
     const hashedToken = crypto
@@ -225,10 +236,7 @@ const resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Token is invalid or expired",
-      });
+      return res.status(400).json({ success: false, message: "Token is invalid or expired" });
     }
 
     user.password = password;
@@ -240,13 +248,10 @@ const resetPassword = async (req, res) => {
 
     await user.save();
 
-    res.json({
-      success: true,
-      message: "Password reset successful",
-    });
+    res.json({ success: true, message: "Password reset successful", });
 
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Something went wrong", });
   }
 };
 
