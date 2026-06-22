@@ -182,25 +182,27 @@ http://localhost:3000
 | POST | `/api/users/change-password` | Change Password |
 | POST | `/api/users/forgot-password` | Forgot Password |
 | POST | `/api/users/reset-password/:token` | Reset Password |
+| GET | `/api/users/me/` | Get User Profile |
+| PUT | `/api/users/reset-password/:token` | Update User Profile |
 
 ---
 
 ## Product Routes
 
-| Method | Endpoint |
-|--------|----------|
-| GET | `/api/products` | getAllProducts |
-| GET | `/api/products/:id` | getSingleProduct |
-| POST | `/api/products/create` | createProduct(Admin Only) |
-| PATCH | `/api/products/:id` | updateProduct(Admin Only) |
-| DELETE | `/api/products/:id` | deleteProduct(Admin Only) |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/products` | Get All Products |
+| GET | `/api/products/:id` | Get Single Product |
+| POST | `/api/products/create` | Create Product(Admin Only) |
+| PATCH | `/api/products/:id` | Update Product(Admin Only) |
+| DELETE | `/api/products/:id` | Delete Product(Admin Only) |
 
 ---
 
 ## Category Routes
 
-| Method | Endpoint |
-|--------|----------|
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | GET | `/api/categories` | getCategories |
 | GET | `/api/categories/:slug` | getCategory |
 | POST | `/api/categories` | createCategory(Admin Only) |
@@ -211,8 +213,8 @@ http://localhost:3000
 
 ## Subcategory Routes
 
-| Method | Endpoint |
-|--------|----------|
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | GET | `/api/subcategories` | getSubCategories |
 | GET | `/api/subcategories/category/:categoryId` | getSubCategoriesByCategory |
 | POST | `/api/subcategories` | createSubCategory(Admin Only) |
@@ -223,8 +225,8 @@ http://localhost:3000
 
 ## Cart Routes
 
-| Method | Endpoint |
-|--------|----------|
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | POST | `/api/cart/add` | addToCart |
 | GET | `/api/cart` | getCart |
 | PUT | `/api/cart/update` | updateCartItem |
@@ -235,8 +237,8 @@ http://localhost:3000
 
 ## Wishlist Routes
 
-| Method | Endpoint |
-|--------|----------|
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | POST | `/api/wishlist` | addToWishlist |
 | GET | `/api/wishlist` | getWishlist |
 | PATCH | `/api/wishlist/:productId` | removeFromWishlist |
@@ -246,8 +248,8 @@ http://localhost:3000
 
 ## Address Routes
 
-| Method | Endpoint |
-|--------|----------|
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | POST | `/api/address` | addAddress |
 | GET | `/api/address` | getAddresses |
 | PUT | `/api/address/:id` | updateAddress |
@@ -258,8 +260,8 @@ http://localhost:3000
 
 ## Order Routes
 
-| Method | Endpoint |
-|--------|----------|
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | POST | `/api/orders` | createOrder |
 | POST | `/api/orders/buy-now` | buyNow |
 | GET | `/api/orders/my-orders` | getUserOrders |
@@ -271,8 +273,8 @@ http://localhost:3000
 
 ## Payment Routes
 
-| Method | Endpoint |
-|--------|----------|
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | POST | `/api/payment/create` | createPayment |
 | POST | `/api/payment/verify` |  verifyPayment |
 | GET | `/api/payment/my` | getUserPayments |
@@ -281,8 +283,8 @@ http://localhost:3000
 
 ## Review Routes
 
-| Method | Endpoint |
-|--------|----------|
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | POST | `/api/reviews` | addReview |
 | DELETE | `/api/reviews/:id` | deleteReview |
 | GET | `/api/reviews/product/:productId` | getProductReviews |

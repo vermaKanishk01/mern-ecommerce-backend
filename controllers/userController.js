@@ -255,10 +255,96 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found", });
+    }
+
+    res.status(200).json({ success: true, data: user, });
+
+  } catch (error) {
+    console.error("Get Profile Error:", error);
+
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+const updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found", });
+    }
+
+    const updates = {};
+
+    if (req.body.name){
+      updates.name = req.body.name.trim();
+    }
+
+    if (req.body.phone){
+      updates.phone = req.body.phone.trim();
+    }
+
+    if (req.file) {
+      try {
+        if (user.avatar?.public_id) {
+          await cloudinary.uploader.destroy(user.avatar.public_id);
+        }
+
+        const uploadedAvatar =
+          await cloudinary.uploader.upload(
+            req.file.path,
+            {
+              folder: "myapp/users",
+              width: 250,
+              height: 250,
+              crop: "fill",
+              gravity: "face",
+            }
+          );
+
+        updates.avatar = {
+          public_id: uploadedAvatar.public_id,
+          url: uploadedAvatar.secure_url,
+        };
+      } finally {
+        if (req.file?.path && fs.existsSync(req.file.path)) {
+          fs.unlinkSync(req.file.path);
+        }
+      }
+    }
+
+    const updatedUser =
+      await User.findByIdAndUpdate(
+        req.user.id,
+        updates,
+        {
+          returnDocument: "after",
+          runValidators: true,
+        }
+      );
+
+    res.status(200).json({ success: true, message: "Profile updated successfully", data: updatedUser });
+
+  } catch (error) {
+    console.error("Update Profile Error:", error);
+
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   signup,
   login,
   changePassword,
   forgotPassword,
   resetPassword,
+  getUserProfile,
+  updateProfile,
 }
